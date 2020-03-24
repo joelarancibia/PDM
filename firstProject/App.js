@@ -26,11 +26,31 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import Mycomponent from './src/miComponente/Mycomponent';
+import Input from './src/login/imput';
+import Logueo from '../firstProject/src/login/logueo';
+import imgPassword from './src/images/pass.png';
+import imgUSer from './src/images/username.png';
+import Constant from './src/login/constants';
+
 
 const App: () => React$Node = () => {
   return (
     <View style={styles.container}>
       <Mycomponent style={styles.box} text="hola mundo desde React native"></Mycomponent>
+      <Mycomponent style={styles.box}text="univ: joel arancibia"></Mycomponent>
+      <Logueo  style={styles.box}></Logueo>
+      <Input
+      source={imgPassword}
+      placeholder={Constant.PASS}
+      secureTextEntry={true}
+      autoCorrect={false}
+      />
+      <Input
+      source={imgUSer}
+      placeholder={Constant.USER}
+      autoCorrect={false}
+      />
+
     </View>
     
   );
