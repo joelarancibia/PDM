@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {view, text } from 'react-native';
+import {View, Text} from 'react-native';
 
  export default class Mycomponent extends Component
 {
@@ -9,11 +9,11 @@ import {view, text } from 'react-native';
     }
     render(){
         return(
-            <view>
+            <View>
                 <Text>
                     {this.props.text}
                 </Text>
-            </view>
+            </View>
         );
     }
 
