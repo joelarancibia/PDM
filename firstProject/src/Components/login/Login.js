@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 
-import imgLogo from '../../images/logo.png';
+import Images from '../../config/Images';
 
 export default class Logo extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class Logo extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={imgLogo} style={styles.image} />
+        <Image source={Images.LOGO} style={styles.image} />
         <Text style={styles.text}>GooWia Solutions</Text>
       </View>
     );
