@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 
-import Images from '../../config/Images';
+import Images from '../../Config/Images';
 
 export default class Logo extends Component {
   constructor(props) {
