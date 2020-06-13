@@ -7,6 +7,7 @@ import LogoLogin from '../../Components/login/Login';
 import EmailTextField from "../../Components/login/EmailTextField";
 import DismissKeyboard from "../../Components/login/DissmissKeyboard";
 import FirebasePlugin from '../../plugins/firebase/Firebase';
+import {AuthContext} from '../../config/Context'
 
 
 import Utils from "../../utils/utils";
@@ -48,11 +49,11 @@ const LoginScreen = ({navigation}) => {
     };
 
     /**
-     * @name _onPress
+     * @name _onPressLogin
      * @desc onPres event
      * @private
      */
-    const _onPress = () => {
+    const _onPressLogin = () => {
         let emailData = _validateEmailAddress();
         let passwordData = _validatePassword();
 
@@ -73,21 +74,13 @@ const LoginScreen = ({navigation}) => {
             setIsLoading(true);
             FirebasePlugin.auth()
                 .signInWithEmailAndPassword(email, password)
-                .then(user => {
+                .then((user) => {
                     setIsLoading(false);
                     navigation.navigate('App');
                 })
-                .catch(error => {
-                    FirebasePlugin.auth()
-                        .createUserWithEmailAndPassword(email, password)
-                        .then(user => {
-                            setIsLoading(false);
-                            navigation.navigate('App');
-                        })
-                        .catch(error => {
-                            setIsLoading(false);
-                            Alert.alert('Invalid Values', error.message);
-                        });
+                .catch((error) => {
+                    setIsLoading(false);
+                    Alert.alert('Invalid Values', error.message);
                 });
         } catch (error) {
             setIsLoading(true);
@@ -106,7 +99,7 @@ const LoginScreen = ({navigation}) => {
                         <LogoLogin style={stylesLoginScreen.logo} />
                         <View style={stylesLoginScreen.form}>
                             <EmailTextField
-                                onChangeText={email => {
+                                onChangeText={(email) => {
                                     setEmail(email);
                                 }}
                                 onEndEditing={_validateEmailAddress}
@@ -117,7 +110,7 @@ const LoginScreen = ({navigation}) => {
                                 autoCorrect={false}
                             />
                             <TextInputLogin
-                                onChangeText={password => {
+                                onChangeText={(password) => {
                                     setPassword(password);
                                 }}
                                 onEndEditing={_validatePassword}
@@ -127,11 +120,20 @@ const LoginScreen = ({navigation}) => {
                                 secureTextEntry={true}
                                 autoCorrect={false}
                             />
-                            <ButtonLogin
-                                isLoading={isLoading}
-                                onPress={_onPress}
-                                titleButton={Constants.STRINGS.TITLE_BUTTON}
-                            />
+                            <View style={stylesLoginScreen.buttonSpace}>
+                                <ButtonLogin
+                                    isLoading={isLoading}
+                                    onPress={_onPressLogin}
+                                    titleButton={Constants.STRINGS.TITLE_BUTTON}
+                                />
+                            </View>
+                            <View>
+                                <ButtonLogin
+                                    isLoading={isLoading}
+                                    onPress={() => {navigation.navigate('Register');}}
+                                    titleButton={Constants.STRINGS.REGISTER_FORM}
+                                />
+                            </View>
                         </View>
                     </SafeAreaView>
                 </View>
@@ -157,6 +159,9 @@ const stylesLoginScreen = StyleSheet.create({
         width: '80%',
         marginBottom: 20,
     },
+    buttonSpace: {
+        marginBottom: 10,
+    }
 });
 
 export default LoginScreen;

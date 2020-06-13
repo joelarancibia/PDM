@@ -1,20 +1,101 @@
-import React from 'react';
-import {StyleSheet, View,  Text} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View, Text, KeyboardAvoidingView, SafeAreaView,Alert} from 'react-native';
 
 import Constants from '../../config/constants';
 import Colors from '../../config/colors';
 import ButtonLogin from '../../Components/login/button';
+import DismissKeyboard from "../../Components/login/DissmissKeyboard";
+import LogoLogin from "../../Components/login/Login";
+import EmailTextField from "../../Components/login/EmailTextField";
+import Images from "../../config/Images";
+import TextInputLogin from "../../Components/login/TextImput";
+import Utils from "../../utils/utils"
+import FirebasePlugin, {firestore} from "../../plugins/firebase/Firebase";
 
 const RegisterScreen = ({navigation}) => {
-    const onPress = () => {
-        console.log('register');
-    };
+    const [email, setEmail] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorPassword, setErrorPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const _validateEmailAddress = () => {
+        let isValidEmail = Utils.isValidEmail(email);
+        isValidEmail
+            ? setErrorEmail('')
+            : setErrorEmail(Constants.STRING.EMAIL_ERROR);
+        return isValidEmail;
+    }
+
+    const _validatePassword = () => {
+        let isValidPassword = Utils.isValidField(password);
+        isValidPassword
+            ? setErrorPassword('')
+            : setErrorPassword(Constants.STRING.PASSWORD_ERROR);
+        return isValidPassword;
+    }
+
+    const _onPressRegister = () => {
+        try {
+            FirebasePlugin.auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then((user) => {
+                    setIsLoading(false);
+                    Alert.alert('Register Form', 'Registered user', [{
+                        text: 'Enter credentials', onPress: () => {navigation.navigate('Login');}
+                    }]);
+                })
+                .catch((error) => {
+                    setIsLoading(false);
+                    Alert.alert('Invalid Values', error.message);
+                });
+        } catch (error) {
+            setIsLoading(false);
+            Alert.alert('Invalid Values', error.message);
+        }
+    }
 
     return (
-        <View style={styles.container}>
-            <Text>Register Screen</Text>
-            <ButtonLogin onPress={onPress} titleButton={Constants.STRINGS.REGISTER} />
-        </View>
+        <DismissKeyboard>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior="height"
+                enabled>
+                <View style={styles.container}>
+                    <SafeAreaView>
+                        <View style={styles.form}>
+                            <EmailTextField
+                                onChangeText={(email) => {
+                                    setEmail(email);
+                                }}
+                                onEndEditing={_validateEmailAddress}
+                                error={errorEmail}
+                                source={Images.EMAIL}
+                                placeholder={Constants.STRINGS.EMAIL}
+                                secureTextEntry={false}
+                                autoCorrect={false}
+                            />
+                            <TextInputLogin
+                                onChangeText={(password) => {
+                                    setPassword(password);
+                                }}
+                                onEndEditing={_validatePassword}
+                                error={errorPassword}
+                                source={Images.USERNAME}
+                                placeholder={Constants.STRINGS.PASSWORD}
+                                secureTextEntry={true}
+                                autoCorrect={false}
+                            />
+                            <ButtonLogin
+                                isLoading={isLoading}
+                                onPress={_onPressRegister}
+                                titleButton={Constants.STRINGS.REGISTER}
+                            />
+                        </View>
+                    </SafeAreaView>
+                </View>
+            </KeyboardAvoidingView>
+        </DismissKeyboard>
     );
 };
 
@@ -23,6 +104,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.blue,
         alignItems: 'center',
+        justifyContent: 'center'
     },
     text: {
         color: Colors.white,
